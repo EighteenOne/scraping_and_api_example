@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  db:
+    build: postgres_init
+    ports:
+      - '5433:5432'
+    env_file:
+      - .env
+
+  app:
+    build: .
+    restart: on-failure
+    depends_on:
+      - db
+    ports:
+      - '8000:8080'
+    command: 'python3.6 -u run.py'
+    env_file:
+      - .env
+
+  parser:
+    build: .
+    restart: on-failure
+    depends_on:
+      - db
+    command: 'python3.6 -u run_job.py'
+    env_file:
+      - .env

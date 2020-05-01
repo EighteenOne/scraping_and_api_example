@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  db:
+    build: postgres_init
+    env_file:
+      - .env
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    restart: on-failure
+    depends_on:
+      - db
+    command: 'py.test'
+    env_file:
+      - .env
