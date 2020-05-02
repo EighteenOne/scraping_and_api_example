@@ -3,6 +3,8 @@ version: '3.7'
 services:
   db:
     build: postgres_init
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
 
@@ -13,7 +15,7 @@ services:
       - db
     ports:
       - '8000:8080'
-    command: 'python3.6 -u run.py'
+    command: ["bash","./wait-for-it.sh", "db:5432", "--", "python3.6", "-u" ,"run.py"]
     env_file:
       - .env
 
@@ -22,6 +24,6 @@ services:
     restart: on-failure
     depends_on:
       - db
-    command: 'python3.6 -u run_job.py'
+    command: ["bash","./wait-for-it.sh", "db:5432", "--", "python3.6", "-u" ,"run_job.py"]
     env_file:
       - .env
